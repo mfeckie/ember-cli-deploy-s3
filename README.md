@@ -149,6 +149,15 @@ This option will be used to determine which files in `distDir`, that match `file
 
 *Default:* `context.gzippedFiles`
 
+
+### brotliCompressedFiles
+
+The list of files that have been compressed wtih brotli. This option should be relative to `distDir`. By default, this option will use the `brotliCompressedFiles` property of the deployment context, provided by [ember-cli-deploy-brotli][4].
+
+This option will be used to determine which files in `distDir`, that match `filePattern`, require the br content encoding when uploading.
+
+*Default:* `context.brotliCompressedFiles`
+
 ### manifestPath
 
 The path to a manifest that specifies the list of files that are to be uploaded to S3.
@@ -325,3 +334,5 @@ Since this is a node-only ember-cli addon, this package does not include many fi
 [7]: http://docs.aws.amazon.com/AmazonS3/latest/dev/cors.html "Amazon CORS guide"
 [8]: http://stackoverflow.com/questions/12229844/amazon-s3-cors-cross-origin-resource-sharing-and-firefox-cross-domain-font-loa?answertab=votes#tab-top "Stackoverflow"
 [9]: http://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html#cli-config-files "AWS Configuration"
+[4]:
+https://github.com/mfeckie/ember-cli-deploy-brotli

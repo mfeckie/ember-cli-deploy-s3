@@ -57,6 +57,9 @@ describe('s3 plugin', function() {
           gzippedFiles: function(context) {
             return context.gzippedFiles || []; // e.g. from ember-cli-deploy-gzip
           },
+          brotliCompressedFiles: function(context) {
+            return context.brotliCompressedFiles || [] // e.g from ember-cli-deploy-brotli
+          },
           manifestPath: function(context) {
             return context.manifestPath; // e.g. from ember-cli-deploy-manifest
           },
@@ -284,6 +287,39 @@ describe('s3 plugin', function() {
         putObject: function(params, cb) {
           if (params.Key === 'app.css') {
             assert.equal(params.ContentEncoding, 'gzip');
+            assertionCount++;
+          } else {
+            assert.isUndefined(params.ContentEncoding);
+            assertionCount++;
+          }
+          cb();
+        },
+        getObject: function(params, cb){
+          cb(new Error("File not found"));
+        }
+      };
+
+      plugin.beforeHook(context);
+      assert.isFulfilled(plugin.upload(context)).then(function(){
+        assert.equal(assertionCount, 2);
+        done();
+      }).catch(function(reason){
+        done(reason);
+      });
+    });
+
+    it('sets the appropriate header if the file is inclued in brotli list', function(done) {
+      var plugin = subject.createDeployPlugin({
+        name: 's3'
+      });
+
+      context.brotliCompressedFiles = ['app.css'];
+      var assertionCount = 0;
+      context.uploadClient = null;
+      context.s3Client = {
+        putObject: function(params, cb) {
+          if (params.Key === 'app.css') {
+            assert.equal(params.ContentEncoding, 'br');
             assertionCount++;
           } else {
             assert.isUndefined(params.ContentEncoding);
